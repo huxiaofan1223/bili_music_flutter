@@ -12,9 +12,9 @@ A Audio Player source by Bilibili.
 
 ## 部分截图
 <div style="display: flex; justify-content: space-around;">
-    <img src="https://github.com/huxiaofan1223/bili_music_flutter/blob/master/screenshorts/search.jpg" alt="search" style="width: 30%;">
-    <img src="https://github.com/huxiaofan1223/bili_music_flutter/blob/master/screenshorts/list.jpg" alt="list" style="width: 30%;">
-    <img src="https://github.com/huxiaofan1223/bili_music_flutter/blob/master/screenshorts/setting.jpg" alt="setting" style="width: 30%;">
+    <img src="https://github.com/huxiaofan1223/bili_music_flutter/blob/master/screenshots/search.jpg" alt="search" style="width: 30%;">
+    <img src="https://github.com/huxiaofan1223/bili_music_flutter/blob/master/screenshots/list.jpg" alt="list" style="width: 30%;">
+    <img src="https://github.com/huxiaofan1223/bili_music_flutter/blob/master/screenshots/setting.jpg" alt="setting" style="width: 30%;">
 </div>
 
 ### 文档来自
