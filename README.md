@@ -11,12 +11,8 @@ A Audio Player source by Bilibili.
 
 
 ## 部分截图
-<div style="display: flex; justify-content: space-around;">
-    <img src="https://github.com/huxiaofan1223/bili_music_flutter/blob/master/screenshots/search.jpg" alt="search" style="width: 30%;margin-right:10px;">
-    <img src="https://github.com/huxiaofan1223/bili_music_flutter/blob/master/screenshots/list.jpg" alt="list" style="width: 30%;margin-right:10px;">
-    <img src="https://github.com/huxiaofan1223/bili_music_flutter/blob/master/screenshots/setting.jpg" alt="setting" style="width: 30%;">
-</div>
-
+| :--: | :--: | :--: |  
+|<img src="https://github.com/huxiaofan1223/bili_music_flutter/blob/master/screenshots/search.jpg" alt="search" style="width: 100%;">|<img src="https://github.com/huxiaofan1223/bili_music_flutter/blob/master/screenshots/list.jpg" alt="list" style="width: 100%;">|<img src="https://github.com/huxiaofan1223/bili_music_flutter/blob/master/screenshots/setting.jpg" alt="setting" style="width: 100%;">|
 ### 文档来自
 - https://github.com/SocialSisterYi/bilibili-API-collect/
 
