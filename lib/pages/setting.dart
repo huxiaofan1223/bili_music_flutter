@@ -229,7 +229,8 @@ class _SettingPageState extends State<SettingPage> with AutomaticKeepAliveClient
   }
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(bottom:50),
       child: Column(
         children: [
           SizedBox(height:10),
@@ -265,18 +266,18 @@ class _SettingPageState extends State<SettingPage> with AutomaticKeepAliveClient
               Text('无用缓存:${byte2Txt(noUseSize)}',style:TextStyle(fontSize: 14)),
             ],
           ),
-          SizedBox(height:20),
+          SizedBox(height:8),
           Row(
             children: [
               SizedBox(width:20),
-              Text("白天模式"),
+              Text("白天模式",style:TextStyle(fontSize: 14)),
               Switch(
                 value: context.watch<PlayStore>().isDarkMode,
                 onChanged: (value) {
                   context.read<PlayStore>().toggleTheme();
                 },
               ),
-              Text("夜间模式"),
+              Text("夜间模式",style:TextStyle(fontSize: 14)),
 
               SizedBox(width:20),
               ElevatedButton(
@@ -291,7 +292,14 @@ class _SettingPageState extends State<SettingPage> with AutomaticKeepAliveClient
               ),
             ],
           ),
-          SizedBox(height:20),
+          SizedBox(height:8),
+          showCode?QrImageView(
+            data: qrUrl,
+            version: QrVersions.auto,
+            backgroundColor:Colors.white,
+            size: 100.0,
+          ):SizedBox(),
+          showCode?Text('请打开Bilibili客户端扫码登录,$limitSeconds秒过期',style:TextStyle(fontSize: 14)):SizedBox(),
           Row(
             children: [
               SizedBox(width:20),
@@ -325,17 +333,9 @@ class _SettingPageState extends State<SettingPage> with AutomaticKeepAliveClient
               ):SizedBox(),
             ],
           ),
-          SizedBox(height:20),
-          showCode?QrImageView(
-            data: qrUrl,
-            version: QrVersions.auto,
-            backgroundColor:Colors.white,
-            size: 200.0,
-          ):SizedBox(),
-          showCode?Text('请打开Bilibili客户端扫码登录,$limitSeconds秒过期',style:TextStyle(fontSize: 14)):SizedBox(),
-          SizedBox(height:30),
+          SizedBox(height:8),
           Text('声明:本软件数据都来自Bilibili,代码已开源,无信息泄露风险',style:TextStyle(fontSize: 14)),
-          SizedBox(height:20),
+          SizedBox(height:8),
         GestureDetector(
           onTap: () async {
             final url = "https://github.com/huxiaofan1223/bili_music_flutter";
