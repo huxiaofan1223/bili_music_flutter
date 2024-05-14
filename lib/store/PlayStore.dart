@@ -181,8 +181,8 @@ class PlayStore with ChangeNotifier, DiagnosticableTreeMixin {
     // });
     var ele = _musicList.firstWhere((item) => item['bvid']  == bvid, orElse: () => null);
     if(ele['fileSize']!=null){
-      if(File(filePath).lengthSync() == ele['fileSize']){
-        log('请求过大小并且文件大小一致');
+      if(File(filePath).existsSync() && File(filePath).lengthSync() == ele['fileSize']){
+        log('文件存在,请求过大小并且文件大小一致');
         return File(filePath);
       }
     }
