@@ -188,7 +188,7 @@ class PlayStore with ChangeNotifier, DiagnosticableTreeMixin {
     }
     if(!isLogin){
       Fluttertoast.showToast(
-          msg: "请先登录",
+          msg: "请前往设置界面登录",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
@@ -313,6 +313,7 @@ class PlayStore with ChangeNotifier, DiagnosticableTreeMixin {
 
   void playOrPause(bool playFlag, {bool changeFlag = false}) async {
     print('playMusicIndex $_current');
+    saveMusicList2Storage();
     log('playOrPause hashCode:${audioPlayer.hashCode}');
     var musicUrl = _musicList[_current]['path'];
     var bvid = _musicList[_current]['bvid'];
@@ -476,6 +477,7 @@ class PlayStore with ChangeNotifier, DiagnosticableTreeMixin {
     await prefs.setString('cookie', cookie);
     await prefs.setBool('isShuffle', isShuffle);
     await prefs.setBool('isDarkMode', isDarkMode);
+    await prefs.setInt('current', current);
   }
   void setDarkMode(val){
     _isDarkMode = val;

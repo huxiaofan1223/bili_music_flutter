@@ -13,7 +13,6 @@ import 'dart:async';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// 定义一个StatefulWidget
 class SettingPage extends StatefulWidget {
   @override
   _SettingPageState createState() => _SettingPageState();
@@ -123,6 +122,9 @@ class _SettingPageState extends State<SettingPage> with AutomaticKeepAliveClient
   }
 
   void handleScanCode() async {
+    if(showCode){
+      return;
+    }
     final jsonResult = await get_login_png_url();
     setState(() {
       limitSeconds = 180;
@@ -255,7 +257,7 @@ class _SettingPageState extends State<SettingPage> with AutomaticKeepAliveClient
                     File(element).deleteSync();
                   });
                 },
-                child: Text('清理缓存'),
+                child: Text('清理无用缓存'),
               ),
               SizedBox(width:20),
               Text('已缓存:${byte2Txt(totalSize)}',style:TextStyle(fontSize: 14)),

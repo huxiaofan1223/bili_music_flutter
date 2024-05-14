@@ -8,7 +8,6 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../store/PlayStore.dart';
 
-// 定义一个StatefulWidget
 class ListPage extends StatefulWidget {
   @override
   _ListPageState createState() => _ListPageState();

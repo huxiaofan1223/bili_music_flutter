@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import '../store/PlayStore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-// 定义一个StatefulWidget
 class SearchPage extends StatefulWidget {
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -35,7 +34,7 @@ class _SearchPageState extends State<SearchPage>
   Future<dynamic> _getSearchResult(String keyword, int page) async {
     if(!context.read<PlayStore>().isLogin){
       Fluttertoast.showToast(
-          msg: "请先登录",
+          msg: "请前往设置界面登录",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,

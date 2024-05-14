@@ -153,6 +153,7 @@ class _MyTabPageState extends State<MyTabPage>
       context.read<PlayStore>().setCookie(prefs.getString('cookie')??'');
       context.read<PlayStore>().setShuffleVal(prefs.getBool('isShuffle')??false);
       context.read<PlayStore>().setDarkMode(prefs.getBool('isDarkMode')??false);
+      context.read<PlayStore>().setCurrent(prefs.getInt('current')??0);
     });
 
     Future.delayed(Duration(milliseconds: 50),() async {
