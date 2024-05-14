@@ -491,6 +491,7 @@ class PlayStore with ChangeNotifier, DiagnosticableTreeMixin {
       'cookie':cookie
     });
     final result = jsonDecode(res.body);
+    print({result:result});
     if (result['code'] == 0) {
       setLogin(true);
     } else {

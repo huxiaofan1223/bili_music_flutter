@@ -154,9 +154,6 @@ class _MyTabPageState extends State<MyTabPage>
       context.read<PlayStore>().setShuffleVal(prefs.getBool('isShuffle')??false);
       context.read<PlayStore>().setDarkMode(prefs.getBool('isDarkMode')??true);
       context.read<PlayStore>().setCurrent(prefs.getInt('current')??0);
-    });
-
-    Future.delayed(Duration(milliseconds: 50),() async {
       context.read<PlayStore>().getUserInfo();
     });
     //防抖
