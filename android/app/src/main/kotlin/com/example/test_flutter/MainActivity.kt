@@ -33,6 +33,11 @@ class MainActivity : FlutterActivity() {
                     restartApp();
                     result.success(null)
                 }
+                "closeApp" -> {
+                    Log.d("closeApp","closeApp");
+                    android.os.Process.killProcess(android.os.Process.myPid())
+                    System.exit(1)
+                }
                 else -> result.notImplemented()
             }
         }
@@ -71,7 +76,7 @@ class MainActivity : FlutterActivity() {
     }
     // 添加重启应用的方法
     fun Context.restartApp() {
-        Log.d("restartApp2","restartApp2");
+        Log.d("restartApp2", "restartApp2");
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)

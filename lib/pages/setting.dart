@@ -279,7 +279,7 @@ class _SettingPageState extends State<SettingPage> with AutomaticKeepAliveClient
               ),
               Text("夜间模式",style:TextStyle(fontSize: 14)),
 
-              SizedBox(width:20),
+              SizedBox(width:10),
               ElevatedButton(
                 onPressed: () async {
                   try {
@@ -289,6 +289,17 @@ class _SettingPageState extends State<SettingPage> with AutomaticKeepAliveClient
                   }
                 },
                 child: Text('重启应用')
+              ),
+              SizedBox(width:10),
+              ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      await _channel.invokeMethod('closeApp');
+                    } catch (e) {
+                      print('Failed to close the app: $e');
+                    }
+                  },
+                  child: Text('退出应用')
               ),
             ],
           ),
