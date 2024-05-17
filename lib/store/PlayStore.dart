@@ -264,15 +264,20 @@ class PlayStore with ChangeNotifier, DiagnosticableTreeMixin {
   }
   Function debounce(Function function, Duration duration) {
     Timer? timer;
+    bool isExecuting = false;
 
     return () {
-      if (timer != null) {
+      if (timer != null && timer!.isActive) {
         timer!.cancel();
       }
 
-      timer = Timer(duration, () {
+      if (!isExecuting) {
         function();
-        timer = null;
+        isExecuting = true;
+      }
+
+      timer = Timer(duration, () {
+        isExecuting = false;
       });
     };
   }
