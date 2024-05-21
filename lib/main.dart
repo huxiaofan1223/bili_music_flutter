@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:OnlineMusic/store/PlayStore.dart';
 import 'package:flutter/material.dart';
@@ -10,14 +11,25 @@ import 'package:provider/provider.dart';
 import './pages/list.dart';
 import './pages/setting.dart';
 import 'package:html_unescape/html_unescape.dart';
-// import 'package:audioplayers/audioplayers.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 
 final String USER_AGENT =
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+
+Future<void> saveFileToDisk(String filePath, Stream<List<int>> stream) async {
+  var file = File(filePath);
+  var sink = file.openWrite();
+
+  await for (var chunk in stream) {
+    sink.add(chunk);
+  }
+  await sink.close();
+}
 
 Future<shelf.Response> handleRequest(shelf.Request request) async {
   // Extract URI and query parameters
@@ -25,13 +37,14 @@ Future<shelf.Response> handleRequest(shelf.Request request) async {
   String queryParams = uri.query ?? '';
 
   String urlValue = '';
+  String bvidValue = '';
   uri.queryParameters.forEach((key, value) {
     if (key == 'url') {
       urlValue = value ?? '';
+    } else if(key == 'bvid') {
+      bvidValue = value ?? '';
     }
   });
-
-  // Decode URL from base64
   String decodedUrl = utf8.decode(base64.decode(urlValue));
   log("decodedUrl:$decodedUrl");
   // Extract host from URL
@@ -43,11 +56,8 @@ Future<shelf.Response> handleRequest(shelf.Request request) async {
     host = host.replaceAll('https://', '');
     print('host: $host');
   }
-
-  // Construct target URL by resolving relative URL against base URL
   Uri targetUrl = Uri.parse(decodedUrl);
 
-  // Forward request to target server
   var client = http.Client();
   var proxyRequest = http.Request(request.method, targetUrl);
   proxyRequest.headers.addAll(request.headers);
@@ -58,16 +68,64 @@ Future<shelf.Response> handleRequest(shelf.Request request) async {
   });
 
   var streamedResponse = await client.send(proxyRequest);
-  // 检查代理请求的头部信息
   print('代理请求的头部信息: ${proxyRequest.headers}');
-
-  // 检查响应头部信息
   print('目标服务器响应的头部信息: ${streamedResponse.headers}');
-  // var response = await http.Response.fromStream(streamedResponse);
-  // client.close();
-  // return shelf.Response.ok(streamedResponse.stream,headers: streamedResponse.headers);
+
+  //缓存到本地
+  final Directory tempDir = await getTemporaryDirectory();
+  final String tempPath = tempDir.path;
+  final String fileName = "$bvidValue.m4s";
+  final String filePath = path.join(tempPath,fileName);
+  File file = File(filePath);
+
+//   streamedResponse.stream.listen(
+//         (data) {
+//       // 将数据写入缓存文件
+//       file.writeAsBytesSync(data, mode: FileMode.append);
+//       // 将数据通过控制器发送给客户端
+//       responseController.add(data);
+//     },
+//     onError: (error, stackTrace) {
+//       // 发生错误时关闭文件流和控制器，并删除缓存文件
+//       file.deleteSync();
+//       responseController.close();
+//     },
+//     onDone: () async {
+//       // 下载完成时关闭文件流和控制器
+//       // await file.close();
+//       responseController.close();
+//     },
+//   );
+//
+// // 返回代理请求的响应，使用自定义的控制器作为响应体
+//   return shelf.Response(streamedResponse.statusCode, body: responseController.stream, headers: streamedResponse.headers);
+// 返回代理请求的响应，包括文件的流和相应的头部信息
+//   return shelf.Response(streamedResponse.statusCode, body: responseStream, headers: streamedResponse.headers);
+  // await saveFileToDisk(filePath, streamedResponse.stream);
+  //
   return shelf.Response(streamedResponse.statusCode, body: streamedResponse.stream, headers: streamedResponse.headers);
+  // 创建一个流式的响应对象，并同时将文件保存到本地缓存
+  // var responseStream = streamedResponse.stream.transform(
+  //   StreamTransformer<List<int>, List<int>>.fromHandlers(
+  //     handleData: (data, sink) async {
+  //       await file.writeAsBytes(data, mode: FileMode.append);
+  //       sink.add(data);
+  //     },
+  //     handleError: (error, stackTrace, sink) {
+  //       // 发生错误时关闭文件流和sink
+  //       file.deleteSync();
+  //       sink.close();
+  //     },
+  //     handleDone: (sink) {
+  //       sink.close();
+  //     },
+  //   ),
+  // );
+
+  // 返回代理请求的响应，包括文件的流和相应的头部信息
+  // return shelf.Response(streamedResponse.statusCode, body: responseStream, headers: streamedResponse.headers);
 }
+
 
 Future<void> main() async {
   runApp(
@@ -80,6 +138,9 @@ Future<void> main() async {
         child: MyApp()
       )
   );
+  var handler = const shelf.Pipeline().addHandler(handleRequest);
+  var server = await shelf_io.serve(handler, '0.0.0.0', 8888);
+  print('Server listening on localhost:${server.port}');
 }
 
 class MyApp extends StatelessWidget {

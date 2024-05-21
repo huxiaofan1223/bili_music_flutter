@@ -122,6 +122,11 @@ class PlayStore with ChangeNotifier, DiagnosticableTreeMixin {
     playOrPause(true, changeFlag: true);
     notifyListeners();
   }
+  Future<String> getProxyUrlByBid(bvid) async {
+    var bUrl = await _getAudioUrl(bvid);
+    var proxyUrl = 'http://localhost:8888/?url=${ base64.encode(utf8.encode(bUrl))}&bvid=${bvid}';
+    return proxyUrl;
+  }
 
   String? _getHostFromUrl(String url){
     RegExp regex = RegExp(r'(?<=\/\/).*?(?=\/)');
@@ -168,6 +173,46 @@ class PlayStore with ChangeNotifier, DiagnosticableTreeMixin {
       return myMap;
     }
   }
+  Future<bool> hasDownloadFile(String bvid) async {
+    final Directory tempDir = await getTemporaryDirectory();
+    final String tempPath = tempDir.path;
+    final String fileName = "$bvid.m4s";
+    final String filePath = path.join(tempPath,fileName);
+    log(filePath);
+    var ele = _musicList.firstWhere((item) => item['bvid']  == bvid, orElse: () => null);
+    if(ele['fileSize']!=null){
+      if(File(filePath).existsSync() && File(filePath).lengthSync() == ele['fileSize']){
+        print('文件存在,请求过大小并且文件大小一致');
+        return true;
+      }
+    }
+    if(!isLogin){
+      Fluttertoast.showToast(
+          msg: "请前往设置界面登录",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    }
+    dynamic remoteFileSizeObj = await getFileSize(bvid);
+    print('remoteFIleSize:${remoteFileSizeObj['size']}');
+    ele['fileSize'] = remoteFileSizeObj['size'];
+    saveMusicList2Storage();
+    if(File(filePath).existsSync()){
+      print("文件存在");
+      print('localFIleSize:${File(filePath).lengthSync()}');
+      if(File(filePath).lengthSync() == remoteFileSizeObj['size']){
+        return true;
+      } else{
+        print("但是文件大小不对,需要重新下载");
+      }
+    }
+    print('文件不存在并且需要下载');
+    return false;
+  }
 
   Future<File> downloadFile(String bvid) async {
     final Directory tempDir = await getTemporaryDirectory();
@@ -182,7 +227,7 @@ class PlayStore with ChangeNotifier, DiagnosticableTreeMixin {
     var ele = _musicList.firstWhere((item) => item['bvid']  == bvid, orElse: () => null);
     if(ele['fileSize']!=null){
       if(File(filePath).existsSync() && File(filePath).lengthSync() == ele['fileSize']){
-        log('文件存在,请求过大小并且文件大小一致');
+        print('文件存在,请求过大小并且文件大小一致');
         return File(filePath);
       }
     }
@@ -202,15 +247,15 @@ class PlayStore with ChangeNotifier, DiagnosticableTreeMixin {
     ele['fileSize'] = remoteFileSizeObj['size'];
     saveMusicList2Storage();
     if(File(filePath).existsSync()){
-      log("文件存在");
+      print("文件存在");
       log('localFIleSize:${File(filePath).lengthSync()}');
       if(File(filePath).lengthSync() == remoteFileSizeObj['size']){
         return File(filePath);
       } else{
-        log("但是文件大小不对,需要重新下载");
+        print("但是文件大小不对,需要重新下载");
       }
     }
-    log('文件不存在,正在下载');
+    print('文件不存在,正在下载');
 
     final Dio dio = Dio();
     try{
@@ -237,8 +282,18 @@ class PlayStore with ChangeNotifier, DiagnosticableTreeMixin {
     await _audioPlayer?.stop();
     _audioPlayer = new AudioPlayer();
     if(bvid != null){
-      File downloadedFile = await downloadFile(bvid);
-      await _audioPlayer.setFilePath(downloadedFile.path);
+      var hasD = await hasDownloadFile(bvid);
+      if(hasD){
+        File downloadedFile = await downloadFile(bvid);
+        await _audioPlayer.setFilePath(downloadedFile.path);
+      } else {
+        var url = await getProxyUrlByBid(bvid);
+        print('url:$url');
+        await _audioPlayer.setUrl(url);
+        Future.delayed(const Duration(milliseconds: 100), () async {
+          downloadFile(bvid);
+        });
+      }
     } else {
       await _audioPlayer.setFilePath(path);
     }
@@ -496,7 +551,7 @@ class PlayStore with ChangeNotifier, DiagnosticableTreeMixin {
       'cookie':cookie
     });
     final result = jsonDecode(res.body);
-    print({result:result});
+    // print({result:result});
     if (result['code'] == 0) {
       setLogin(true);
     } else {
