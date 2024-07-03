@@ -60,6 +60,7 @@ dev_dependencies:
   qr_flutter: ^4.1.0
   fluttertoast: ^8.2.5
   url_launcher: ^6.0.0
+  cached_network_image: ^3.3.1
   flutter_mp3_finder:
     path: plugins/flutter_mp3_finder/
 # For information on the generic Dart part of this file, see the

@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../store/PlayStore.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ListPage extends StatefulWidget {
   @override
@@ -130,32 +131,24 @@ class _ListPageState extends State<ListPage> with AutomaticKeepAliveClientMixin 
                                 child: !context
                                     .watch<PlayStore>()
                                     .musicList[index]['isLocal']
-                                    ? FadeInImage(
-                                    imageErrorBuilder:
-                                        (context, error, stackTrace) {
-                                      return Image.asset(
-                                          'assets/placeholder.png',width: 30,
-                                          height: 30);
-                                    },
-                                    placeholder: AssetImage(
-                                        'assets/placeholder.png'),
-                                    image: NetworkImage(context
-                                        .watch<PlayStore>()
-                                        .musicList[index]['pic']
-                                        .startsWith('http')
-                                        ? context
-                                        .watch<PlayStore>()
-                                        .musicList[index]['pic']
-                                        : 'https:' +
-                                        context
-                                            .watch<PlayStore>()
-                                            .musicList[index]
-                                        ['pic']),
-                                    // 网络图片
-                                    fit: BoxFit.cover,
-                                    // 图片填充方式
+                                    ? CachedNetworkImage(
+                                  imageUrl: context.watch<PlayStore>().musicList[index]['pic'].startsWith('http')
+                                      ? context.watch<PlayStore>().musicList[index]['pic']
+                                      : 'https:' + context.watch<PlayStore>().musicList[index]['pic'],
+                                  placeholder: (context, url) => Image.asset(
+                                    'assets/placeholder.png',
                                     width: 30,
-                                    height: 30)
+                                    height: 30,
+                                  ),
+                                  errorWidget: (context, url, error) => Image.asset(
+                                    'assets/placeholder.png',
+                                    width: 30,
+                                    height: 30,
+                                  ),
+                                  fit: BoxFit.cover,
+                                  width: 30,
+                                  height: 30,
+                                )
                                     : Consumer<PlayStore>(
                                   builder:
                                       (context, playStore, child) {

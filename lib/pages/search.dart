@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../store/PlayStore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -165,20 +166,24 @@ class _SearchPageState extends State<SearchPage>
                           children: [
                             Padding(
                               padding: EdgeInsets.only(right: 10),
-                              child: FadeInImage(
-                                  placeholder:
-                                  AssetImage('assets/placeholder.png'),
-                                  image: NetworkImage(_tableData[index]
-                                  ['pic']
-                                      .startsWith('http')
-                                      ? _tableData[index]['pic']
-                                      : 'https:' +
-                                      _tableData[index]['pic']),
-                                  // 网络图片
-                                  fit: BoxFit.cover,
-                                  // 图片填充方式
+                              child: CachedNetworkImage(
+                                imageUrl: _tableData[index]['pic'].startsWith('http')
+                                    ? _tableData[index]['pic']
+                                    : 'https:' + _tableData[index]['pic'],
+                                placeholder: (context, url) => Image.asset(
+                                  'assets/placeholder.png',
+                                  width: 30,
+                                  height: 30,
+                                ),
+                                errorWidget: (context, url, error) => Image.asset(
+                                  'assets/placeholder.png',
                                   width: 40,
-                                  height: 40),
+                                  height: 40,
+                                ),
+                                fit: BoxFit.cover,
+                                width: 40,
+                                height: 40,
+                              ),
                             ),
                             Expanded(
                                 child: Container(

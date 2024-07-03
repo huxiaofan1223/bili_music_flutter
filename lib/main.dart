@@ -17,6 +17,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 final String USER_AGENT =
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
@@ -358,34 +359,24 @@ class _MyTabPageState extends State<MyTabPage>
                                               .watch<PlayStore>()
                                               .musicList[context.watch<PlayStore>().current]
                                           ['isLocal']
-                                      ? FadeInImage(
-                                          imageErrorBuilder: (context, error,
-                                              stackTrace) {
-                                            return Image.asset(
-                                                'assets/placeholder.png',
-                                                width: 40,
-                                                height: 40);
-                                          },
-                                          placeholder: AssetImage(
-                                              'assets/placeholder.png'),
-                                          image: NetworkImage(context
-                                                  .watch<PlayStore>()
-                                                  .musicList[context.watch<PlayStore>().current]
-                                                      ['pic']
-                                                  .startsWith('http')
-                                              ? context
-                                                      .watch<PlayStore>()
-                                                      .musicList[context.watch<PlayStore>().current]
-                                                  ['pic']
-                                              : 'https:' +
-                                                  context
-                                                      .watch<PlayStore>()
-                                                      .musicList[context.watch<PlayStore>().current]['pic']),
-                                          // 网络图片
-                                          fit: BoxFit.cover,
-                                          // 图片填充方式
-                                          width: 40,
-                                          height: 40)
+                                      ? CachedNetworkImage(
+                                    imageUrl: context.watch<PlayStore>().musicList[context.watch<PlayStore>().current]['pic'].startsWith('http')
+                                        ? context.watch<PlayStore>().musicList[context.watch<PlayStore>().current]['pic']
+                                        : 'https:' + context.watch<PlayStore>().musicList[context.watch<PlayStore>().current]['pic'],
+                                    placeholder: (context, url) => Image.asset(
+                                      'assets/placeholder.png',
+                                      width: 40,
+                                      height: 40,
+                                    ),
+                                    errorWidget: (context, url, error) => Image.asset(
+                                      'assets/placeholder.png',
+                                      width: 40,
+                                      height: 40,
+                                    ),
+                                    fit: BoxFit.cover,
+                                    width: 40,
+                                    height: 40,
+                                  )
                                       : Base64Image(context.select<PlayStore, dynamic>((value) {
                                           if (value.musicList.length >
                                               value.current) {
