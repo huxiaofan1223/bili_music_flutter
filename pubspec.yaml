@@ -61,6 +61,8 @@ dev_dependencies:
   fluttertoast: ^8.2.5
   url_launcher: ^6.0.0
   cached_network_image: ^3.3.1
+  window_manager: ^0.4.2
+  tray_manager: ^0.2.3
   flutter_mp3_finder:
     path: plugins/flutter_mp3_finder/
 # For information on the generic Dart part of this file, see the
@@ -75,6 +77,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/placeholder.png
+    - assets/app.ico
+    - assets/app.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

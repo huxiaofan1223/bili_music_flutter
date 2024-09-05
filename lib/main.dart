@@ -18,6 +18,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:window_manager/window_manager.dart';
+import 'package:flutter/material.dart' hide MenuItem;
+import 'package:tray_manager/tray_manager.dart';
 
 final String USER_AGENT =
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
@@ -72,63 +75,39 @@ Future<shelf.Response> handleRequest(shelf.Request request) async {
   print('代理请求的头部信息: ${proxyRequest.headers}');
   print('目标服务器响应的头部信息: ${streamedResponse.headers}');
 
-  //缓存到本地
-  final Directory tempDir = await getTemporaryDirectory();
-  final String tempPath = tempDir.path;
-  final String fileName = "$bvidValue.m4s";
-  final String filePath = path.join(tempPath,fileName);
-  File file = File(filePath);
-
-//   streamedResponse.stream.listen(
-//         (data) {
-//       // 将数据写入缓存文件
-//       file.writeAsBytesSync(data, mode: FileMode.append);
-//       // 将数据通过控制器发送给客户端
-//       responseController.add(data);
-//     },
-//     onError: (error, stackTrace) {
-//       // 发生错误时关闭文件流和控制器，并删除缓存文件
-//       file.deleteSync();
-//       responseController.close();
-//     },
-//     onDone: () async {
-//       // 下载完成时关闭文件流和控制器
-//       // await file.close();
-//       responseController.close();
-//     },
-//   );
-//
-// // 返回代理请求的响应，使用自定义的控制器作为响应体
-//   return shelf.Response(streamedResponse.statusCode, body: responseController.stream, headers: streamedResponse.headers);
-// 返回代理请求的响应，包括文件的流和相应的头部信息
-//   return shelf.Response(streamedResponse.statusCode, body: responseStream, headers: streamedResponse.headers);
-  // await saveFileToDisk(filePath, streamedResponse.stream);
-  //
   return shelf.Response(streamedResponse.statusCode, body: streamedResponse.stream, headers: streamedResponse.headers);
-  // 创建一个流式的响应对象，并同时将文件保存到本地缓存
-  // var responseStream = streamedResponse.stream.transform(
-  //   StreamTransformer<List<int>, List<int>>.fromHandlers(
-  //     handleData: (data, sink) async {
-  //       await file.writeAsBytes(data, mode: FileMode.append);
-  //       sink.add(data);
-  //     },
-  //     handleError: (error, stackTrace, sink) {
-  //       // 发生错误时关闭文件流和sink
-  //       file.deleteSync();
-  //       sink.close();
-  //     },
-  //     handleDone: (sink) {
-  //       sink.close();
-  //     },
-  //   ),
-  // );
-
-  // 返回代理请求的响应，包括文件的流和相应的头部信息
-  // return shelf.Response(streamedResponse.statusCode, body: responseStream, headers: streamedResponse.headers);
 }
 
+Future<void> setupTray() async {
+  // 设置托盘图标
+  await trayManager.setIcon(
+    Platform.isWindows
+        ? 'assets/app.ico'
+        : 'assets/app.png',
+  );
+
+  // 创建托盘菜单
+  Menu menu = Menu(
+    items: [
+      MenuItem(
+        key: 'show_window',
+        label: '显示',
+      ),
+      MenuItem.separator(),
+      MenuItem(
+        key: 'exit_app',
+        label: '退出',
+      ),
+    ],
+  );
+
+  await trayManager.setContextMenu(menu);
+}
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+  await setupTray();
   runApp(
       MultiProvider(
         providers: [
@@ -170,7 +149,7 @@ class MyTabPage extends StatefulWidget {
 }
 
 class _MyTabPageState extends State<MyTabPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin,TrayListener,WindowListener {
   late TabController _tabController;
   var dplayNext;
   var dplayPrev;
@@ -213,8 +192,63 @@ class _MyTabPageState extends State<MyTabPage>
   }
 
   @override
+  void onWindowClose() async {
+    // 阻止关闭窗口，并调用最小化方法
+    await windowManager.hide();
+  }
+
+  @override
+  void dispose() {
+    // windowManager.removeListener(this);
+    _tabController.dispose();
+    trayManager.removeListener(this);
+    windowManager.removeListener(this);
+    super.dispose();
+  }
+  void _init() async {
+    // Add this line to override the default close handler
+    await windowManager.setPreventClose(true);
+    setState(() {});
+  }
+
+
+  @override
+  void onTrayIconMouseDown() {
+    // do something, for example pop up the menu
+    // trayManager.popUpContextMenu();
+    windowManager.restore();
+    windowManager.show();
+  }
+
+  @override
+  void onTrayIconRightMouseDown() {
+    // do something
+    trayManager.popUpContextMenu();
+  }
+
+  @override
+  void onTrayIconRightMouseUp() {
+    trayManager.popUpContextMenu();
+    // do something
+  }
+
+  @override
+  void onTrayMenuItemClick(MenuItem menuItem) {
+    if (menuItem.key == 'show_window') {
+      // do something
+      windowManager.restore();
+      windowManager.show();
+    } else if (menuItem.key == 'exit_app') {
+      windowManager.destroy();
+    }
+  }
+
+  @override
   void initState(){
+    trayManager.addListener(this);
     super.initState();
+    windowManager.addListener(this);
+    _init();
     Future.delayed(Duration(milliseconds: 0),() async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       context.read<PlayStore>().setCookie(prefs.getString('cookie')??'');
@@ -234,6 +268,7 @@ class _MyTabPageState extends State<MyTabPage>
         _initializeProviderState();
     });
   }
+
   Future<void> _initializeProviderState() async {
     const MethodChannel _channel = MethodChannel('com.example/mediaControl');
     _channel.setMethodCallHandler((call) async {
@@ -278,11 +313,6 @@ class _MyTabPageState extends State<MyTabPage>
     return unescape.convert(htmlText.replaceAll(exp, ''));
   }
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
