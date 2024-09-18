@@ -21,6 +21,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter/material.dart' hide MenuItem;
 import 'package:tray_manager/tray_manager.dart';
+import 'package:windows_single_instance/windows_single_instance.dart';
 
 final String USER_AGENT =
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
@@ -104,10 +105,17 @@ Future<void> setupTray() async {
   await trayManager.setContextMenu(menu);
 }
 
-Future<void> main() async {
+Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+  await WindowsSingleInstance.ensureSingleInstance(args, "instance_checker", onSecondWindow: (args) {
+    // ignore: avoid_print
+    print(args);
+  });
   await windowManager.ensureInitialized();
   await setupTray();
+  // 创建并设置窗口属性
+  await windowManager.setTitle('BiliMusic');
+  await windowManager.setSize(Size(500, 700)); // 设置初始窗口大小
   runApp(
       MultiProvider(
         providers: [
