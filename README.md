@@ -29,3 +29,4 @@ A Audio Player source by Bilibili.
 - 音源来自于Bilibili,不用担心是否有音乐会员(b站上几乎什么歌都能听)
 - 基于flutter，理论上可以跨多个平台(windows,linux,mac,ios)，但我只做了安卓的适配
 - 由于请求的API需要登录凭证，本软件强制要求扫码登录bilibili，但无其他用途，保证不泄露个人信息
+- 还有一点原因是B站能听到很多歌手的Live  感谢强大的B站
