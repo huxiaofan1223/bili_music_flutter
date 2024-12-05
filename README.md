@@ -22,7 +22,8 @@ A Audio Player source by Bilibili.
 
 ### 下载地址(安卓)
 - https://github.com/huxiaofan1223/bili_music_flutter/releases/download/bili_music_flutter_v0.1/bili_music_flutter_v0.1.apk
-- 后续会考虑放出WindowsApp链接
+### 下载地址(Windows)
+- https://github.com/huxiaofan1223/bili_music_flutter/releases/download/bili_music_flutter_v0.1/bili_music_windows_v0.1.zip
 ### 更多
 
 - 项目初衷是写给自己的安卓车机使用(因为不想连蓝牙，蓝牙音质有损)，现在成了我电脑主力音乐播放器
