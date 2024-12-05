@@ -14,7 +14,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
 import 'dart:core';
 import 'package:just_audio/just_audio.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
+import 'package:oktoast/oktoast.dart';
 
 final String USER_AGENT =
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
@@ -187,15 +188,16 @@ class PlayStore with ChangeNotifier, DiagnosticableTreeMixin {
       }
     }
     if(!isLogin){
-      Fluttertoast.showToast(
-          msg: "请前往设置界面登录",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.grey,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+      // Fluttertoast.showToast(
+      //     msg: "请前往设置界面登录",
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.CENTER,
+      //     timeInSecForIosWeb: 1,
+      //     backgroundColor: Colors.grey,
+      //     textColor: Colors.white,
+      //     fontSize: 16.0
+      // );
+      showToast('请前往设置界面登录',backgroundColor: Colors.grey);
     }
     dynamic remoteFileSizeObj = await getFileSize(bvid);
     print('remoteFIleSize:${remoteFileSizeObj['size']}');
@@ -232,15 +234,16 @@ class PlayStore with ChangeNotifier, DiagnosticableTreeMixin {
       }
     }
     if(!isLogin){
-      Fluttertoast.showToast(
-          msg: "请前往设置界面登录",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.grey,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+      // Fluttertoast.showToast(
+      //     msg: "请前往设置界面登录",
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.CENTER,
+      //     timeInSecForIosWeb: 1,
+      //     backgroundColor: Colors.grey,
+      //     textColor: Colors.white,
+      //     fontSize: 16.0
+      // );
+      showToast('请前往设置界面登录',backgroundColor: Colors.grey);
     }
     dynamic remoteFileSizeObj = await getFileSize(bvid);
     log('remoteFIleSize:${remoteFileSizeObj['size']}');

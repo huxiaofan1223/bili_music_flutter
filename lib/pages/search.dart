@@ -6,8 +6,9 @@ import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../store/PlayStore.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:oktoast/oktoast.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -34,15 +35,16 @@ class _SearchPageState extends State<SearchPage>
 
   Future<dynamic> _getSearchResult(String keyword, int page) async {
     if(!context.read<PlayStore>().isLogin){
-      Fluttertoast.showToast(
-          msg: "请前往设置界面登录",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.grey,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+      // Fluttertoast.showToast(
+      //     msg: "请前往设置界面登录",
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.CENTER,
+      //     timeInSecForIosWeb: 1,
+      //     backgroundColor: Colors.grey,
+      //     textColor: Colors.white,
+      //     fontSize: 16.0
+      // );
+      showToast('请前往设置界面登录',backgroundColor: Colors.grey);
       return;
     }
     const url = 'https://api.bilibili.com/x/web-interface/wbi/search/type';

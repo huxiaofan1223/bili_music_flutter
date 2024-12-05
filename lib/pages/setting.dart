@@ -10,8 +10,9 @@ import 'dart:convert';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:oktoast/oktoast.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -151,15 +152,16 @@ class _SettingPageState extends State<SettingPage> with AutomaticKeepAliveClient
       if (code == 0) {
         timer?.cancel();
         // message.success('登录成功!');
-        Fluttertoast.showToast(
-            msg: "登录成功!",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.grey,
-            textColor: Colors.white,
-            fontSize: 16.0
-        );
+        // Fluttertoast.showToast(
+        //     msg: "登录成功!",
+        //     toastLength: Toast.LENGTH_SHORT,
+        //     gravity: ToastGravity.CENTER,
+        //     timeInSecForIosWeb: 1,f
+        //     backgroundColor: Colors.grey,
+        //     textColor: Colors.white,
+        //     fontSize: 16.0
+        // );
+        showToast('登录成功!',backgroundColor: Colors.grey);
         setState(() {
           showCode = false;
         });
@@ -170,15 +172,16 @@ class _SettingPageState extends State<SettingPage> with AutomaticKeepAliveClient
         });
       } else {
         if (msg != '未扫码') {
-          Fluttertoast.showToast(
-              msg:msg,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.grey,
-              textColor: Colors.white,
-              fontSize: 16.0
-          );
+          // Fluttertoast.showToast(
+          //     msg:msg,
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.CENTER,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: Colors.grey,
+          //     textColor: Colors.white,
+          //     fontSize: 16.0
+          // );
+          showToast(msg,backgroundColor: Colors.grey);
         }
       }
       if (limitSeconds > 0) {
@@ -189,15 +192,16 @@ class _SettingPageState extends State<SettingPage> with AutomaticKeepAliveClient
       } else {
         timer?.cancel();
         // handleScanCode();
-        Fluttertoast.showToast(
-            msg:'二维码已过期,请更新二维码',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.grey,
-            textColor: Colors.white,
-            fontSize: 16.0
-        );
+        // Fluttertoast.showToast(
+        //     msg:'二维码已过期,请更新二维码',
+        //     toastLength: Toast.LENGTH_SHORT,
+        //     gravity: ToastGravity.CENTER,
+        //     timeInSecForIosWeb: 1,
+        //     backgroundColor: Colors.grey,
+        //     textColor: Colors.white,
+        //     fontSize: 16.0
+        // );
+        showToast('二维码已过期,请更新二维码',backgroundColor: Colors.grey);
         setState(() {
           limitSeconds=180;
           showCode=false;

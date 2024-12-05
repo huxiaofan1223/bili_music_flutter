@@ -1,5 +1,5 @@
-name: OnlineMusic
-description: "OnlineMusic"
+name: bili_music
+description: "BilibiliOnlineMusic"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -58,7 +58,7 @@ dev_dependencies:
   just_audio: ^0.9.37
   provider: ^6.1.2
   qr_flutter: ^4.1.0
-  fluttertoast: ^8.2.5
+#  fluttertoast: ^8.2.5
   url_launcher: ^6.0.0
   cached_network_image: ^3.3.1
   window_manager: ^0.4.2
@@ -66,6 +66,7 @@ dev_dependencies:
   ffi: ^2.0.1
   win32: ^2.4.0
   windows_single_instance: ^1.0.1
+  oktoast: ^3.4.0
   flutter_mp3_finder:
     path: plugins/flutter_mp3_finder/
 # For information on the generic Dart part of this file, see the

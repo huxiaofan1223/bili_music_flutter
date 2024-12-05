@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:OnlineMusic/store/PlayStore.dart';
+import 'package:bili_music/store/PlayStore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './pages/search.dart';
@@ -22,6 +22,7 @@ import 'package:window_manager/window_manager.dart';
 import 'package:flutter/material.dart' hide MenuItem;
 import 'package:tray_manager/tray_manager.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
+import 'package:oktoast/oktoast.dart';
 
 final String USER_AGENT =
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
@@ -134,20 +135,23 @@ Future<void> main(List<String> args) async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        textTheme: TextTheme(
-          bodyText2: TextStyle(fontSize: 18), // 这里设置默认的字体大小为20
+    return OKToast(
+      child:MaterialApp(
+        theme: ThemeData(
+          textTheme: TextTheme(
+            bodyText2: TextStyle(fontSize: 18), // 这里设置默认的字体大小为20
+          ),
         ),
-      ),
-      themeMode: context.watch<PlayStore>().isDarkMode ? ThemeMode.dark : ThemeMode.light,
-      darkTheme: ThemeData.dark().copyWith(
-        textTheme: TextTheme(
-          bodyText2: TextStyle(fontSize: 18), // 这里设置默认的字体大小为20
+        themeMode: context.watch<PlayStore>().isDarkMode ? ThemeMode.dark : ThemeMode.light,
+        darkTheme: ThemeData.dark().copyWith(
+          textTheme: TextTheme(
+            bodyText2: TextStyle(fontSize: 18), // 这里设置默认的字体大小为20
+          ),
         ),
-      ),
-      home: MyTabPage(),
+        home: MyTabPage(),
+      )
     );
+
   }
 }
 
