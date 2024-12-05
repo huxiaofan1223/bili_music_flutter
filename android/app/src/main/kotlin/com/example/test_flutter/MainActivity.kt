@@ -1,4 +1,4 @@
-package com.example.test_flutter
+package com.example.bili_music
 import io.flutter.plugins.GeneratedPluginRegistrant
 import android.content.Intent
 import android.os.Bundle
