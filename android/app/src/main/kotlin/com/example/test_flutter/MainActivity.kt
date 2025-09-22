@@ -61,6 +61,10 @@ class MainActivity : FlutterActivity() {
                     Log.d("click","play");
                     sendKeyCodeToFlutter("play");
                     return true
+                } else if(keyEvent?.keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE){
+                    Log.d("click","toggle_play");
+                    sendKeyCodeToFlutter("toggle_play");
+                    return true
                 }
                 return super.onMediaButtonEvent(mediaButtonEvent)
             }

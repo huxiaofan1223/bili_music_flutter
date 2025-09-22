@@ -170,6 +170,7 @@ class _MyTabPageState extends State<MyTabPage>
   var dplayPrev;
   var dplay;
   var dpause;
+  var dtogglePlay;
   String _int2String(int val) {
     // 将毫秒转换为秒
     int seconds = val;
@@ -277,6 +278,7 @@ class _MyTabPageState extends State<MyTabPage>
     dplayPrev = debounce(() => context.read<PlayStore>().playPrev(), Duration(milliseconds: 500));
     dplay = debounce(() => context.read<PlayStore>().playOrPause(true), Duration(milliseconds: 500));
     dpause = debounce(() => context.read<PlayStore>().playOrPause(false), Duration(milliseconds: 500));
+    dtogglePlay = debounce(() => context.read<PlayStore>().togglePlay(), Duration(milliseconds: 500));
     _tabController = TabController(length: 3, vsync: this); // 3是选项卡数量
     context.read<PlayStore>().getMp3sData();
     Future.delayed(Duration(milliseconds: 100),(){
@@ -299,6 +301,8 @@ class _MyTabPageState extends State<MyTabPage>
             dplay();
           } else if(call.arguments == 'play') {
             dpause();
+          } else if(call.arguments == 'toggle_play'){
+            dtogglePlay();
           }
           break;
         default:

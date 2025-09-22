@@ -374,6 +374,10 @@ class PlayStore with ChangeNotifier, DiagnosticableTreeMixin {
     return '${formattedMinutes}:${formattedSeconds}';
   }
 
+  void togglePlay(){
+    _playStatus = !playStatus;
+    playOrPause(_playStatus);
+  }
   void playOrPause(bool playFlag, {bool changeFlag = false}) async {
     print('playMusicIndex $_current');
     saveMusicList2Storage();
