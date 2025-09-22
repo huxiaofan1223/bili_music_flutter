@@ -365,7 +365,13 @@ class _SettingPageState extends State<SettingPage> with AutomaticKeepAliveClient
               style:TextStyle(fontSize: 14,color:Colors.blue)
           ),
         ),
-        ],
+        Center(
+          child: Text(
+            'Current textScaleFactor: ${MediaQuery.of(context).textScaleFactor}',
+            style: TextStyle(fontSize: 16.0),
+          ),
+        )
+          ],
       )
     );
   }
